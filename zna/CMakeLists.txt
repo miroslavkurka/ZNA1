@@ -3,7 +3,8 @@ project(zna CUDA)
 
 set(CMAKE_CUDA_STANDARD 23)
 
-add_executable(zna main.cu)
+add_executable(zna main.cu
+        object_intersection.cu)
 
 set_target_properties(zna PROPERTIES
         CUDA_SEPARABLE_COMPILATION ON)
