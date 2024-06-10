@@ -1,4 +1,7 @@
 import numpy as np
+import object_intersection
+
+
 def pseudometric(concept_one, concept_two):
     """
     Calculate the Rice-Siff pseudometric between two concepts.
@@ -12,16 +15,34 @@ def pseudometric(concept_one, concept_two):
     """
     return 1 - (len(np.intersect1d(concept_one, concept_two)) / len(np.union1d(concept_one, concept_two)))
 
-def minimum_similarity():
+
+def find_minimum_similarity(context):
     """
-    Find the minimum similarity between two concepts.
-    Args:
+    Find the pair of rows with the minimum similarity score in the matrix_of_indices.
+
+    Parameters:
+        context (np.ndarray): Input 2D array.
 
     Returns:
-        float: Minimum similarity between two concepts.
-        int: Index of the first concept.
-        int: Index of the second concept.
+    tuple: Minimum similarity score, and indices of the two rows with that score.
     """
+    # Convert the list of lists to an array of sets of indices for efficient comparison
+
+    # Initialize minimum similarity and corresponding indices
+    min_similarity = np.inf
+    index1, index2 = -1, -1
+    true_indexes = object_intersection.reduce_bar_table(context)
+    num_rows = len(true_indexes)
+
+    # Iterate over all pairs of rows
+    for i in range(num_rows):
+        for j in range(i + 1, num_rows):
+            similarity = pseudometric(true_indexes[i], true_indexes[j])
+            if similarity < min_similarity:
+                min_similarity = similarity
+                index1, index2 = i, j
+
+    return min_similarity, index1, index2
 
 
 def rice_siff(context):
