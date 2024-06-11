@@ -33,7 +33,7 @@ def object_intersection(bar_table):
     concepts = [[_ for _ in range(len(reduced_bar_table[0]))]]
     for row in reduced_bar_table:
         for c in concepts:
-            intersection = np.intersect1d(row, c)
+            intersection = np.intersect1d(row, c).tolist()
             if intersection not in concepts:
                 concepts.append(intersection)
     return concepts

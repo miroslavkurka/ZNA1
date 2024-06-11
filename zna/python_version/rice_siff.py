@@ -16,28 +16,24 @@ def pseudometric(concept_one, concept_two):
     return 1 - (len(np.intersect1d(concept_one, concept_two)) / len(np.union1d(concept_one, concept_two)))
 
 
-def find_minimum_similarity(context):
+def find_minimum_similarity(reduced_context):
     """
     Find the pair of rows with the minimum similarity score in the matrix_of_indices.
 
     Parameters:
-        context (np.ndarray): Input 2D array.
-
+        reduced_context (np.ndarray): Input 2D array.
+            arrays with indices of non-zero elements for each row.
     Returns:
     tuple: Minimum similarity score, and indices of the two rows with that score.
     """
-    # Convert the list of lists to an array of sets of indices for efficient comparison
-
-    # Initialize minimum similarity and corresponding indices
     min_similarity = np.inf
     index1, index2 = -1, -1
-    true_indexes = object_intersection.reduce_bar_table(context)
-    num_rows = len(true_indexes)
+    num_rows = len(reduced_context)
 
     # Iterate over all pairs of rows
     for i in range(num_rows):
         for j in range(i + 1, num_rows):
-            similarity = pseudometric(true_indexes[i], true_indexes[j])
+            similarity = pseudometric(reduced_context[i], reduced_context[j])
             if similarity < min_similarity:
                 min_similarity = similarity
                 index1, index2 = i, j
@@ -54,10 +50,10 @@ def rice_siff(context):
     Returns:
         list of lists: List containing the intersection of objects.
     """
-    c = rice_siff.reduce_bar_table(context)
-    d = rice_siff.reduce_bar_table(context)
+    c = object_intersection.reduce_bar_table(context)
+    d = object_intersection.reduce_bar_table(context)
     while len(d) > 1:
-        min_similarity, index1, idx2 = rice_siff.find_minimum_similarity(d)
+        min_similarity, index1, idx2 = find_minimum_similarity(d)
         row1 = d[index1]
         row2 = d[idx2]
         intersection = np.intersect1d(row1, row2).tolist()
