@@ -3,6 +3,7 @@ import object_intersection as ob
 import rice_siff as rs
 import matplotlib.pyplot as plt
 import factorize as fc
+from tabulate import tabulate
 
 def plot_data(num_of_matrices, lengths_objintr, lengths_ricesiff):
     x = np.arange(num_of_matrices)
@@ -34,6 +35,7 @@ if __name__ == "__main__":
     lengths_ricesiff = []
 
     counter = 0
+    results = []
     for _ in range (num_of_matrices):
         counter+=1
         matrix = generate_matrix(num_of_rows,num_of_cols)
@@ -43,17 +45,34 @@ if __name__ == "__main__":
         concepts_from_ricesiff = rs.rice_siff(matrix)
         concepts_from_ricesiff = [set(el) for el in concepts_from_ricesiff]
 
-        cover = fc.set_cover(set(range(num_of_cols)), concepts_from_objintr)
-
+        cover_objintr = fc.set_cover(set(range(num_of_cols)), concepts_from_objintr)
+        cover_ricesiff = fc.set_cover(set(range(num_of_cols)), concepts_from_ricesiff)
 
 
         lengths_objintr.append(len(concepts_from_objintr))
         lengths_ricesiff.append(len(concepts_from_ricesiff))
+        results.append({
+            "Round": counter,
+            "Objintr Concepts": len(concepts_from_objintr),
+            "Objintr Sets": concepts_from_objintr,
+            "Ricesiff Concepts": len(concepts_from_ricesiff),
+            "Ricesiff Sets": concepts_from_ricesiff,
+            "Cover Objintr": cover_objintr,
+            "Cover Ricesiff": cover_ricesiff
+        })
 
-        print(f"-------------------------------ROUND NUMBER {counter}--------------------------------------------")
-        print(f"{len(concepts_from_objintr)} concepts from objintr:")
-        print(concepts_from_objintr)
-        print(f"{len(concepts_from_ricesiff)} concepts from ricesiff:")
-        print(concepts_from_ricesiff)
-        #print(f"cover concepts from ricesiff:")
-        print(cover)
+    headers = ["Round", "Object Intersection Concepts", "Object Intersection Sets", "Rice-Siff Concepts", "Rice-Siff Sets", "Cover Object Intersection", "Cover Rice-Siff"]
+    table = []
+
+    for result in results:
+        table.append([
+            result["Round"],
+            result["Objintr Concepts"],
+            result["Objintr Sets"],
+            result["Ricesiff Concepts"],
+            result["Ricesiff Sets"],
+            result["Cover Objintr"],
+            result["Cover Ricesiff"]
+        ])
+
+    print(tabulate(table, headers, tablefmt="grid"))

@@ -13,7 +13,11 @@ def pseudometric(concept_one, concept_two):
         float: Pseudometric between two concepts. Which is 1 - (|A ∩ B| / |A ∪ B|)
 
     """
-    return 1 - (len(np.intersect1d(concept_one, concept_two)) / len(np.union1d(concept_one, concept_two)))
+    union_size=len(np.union1d(concept_one, concept_two))
+    intersection_size=len(np.intersect1d(concept_one, concept_two))
+    if union_size == 0:
+        return 1
+    return 1 - (intersection_size / union_size)
 
 
 def find_minimum_similarity(reduced_context):
