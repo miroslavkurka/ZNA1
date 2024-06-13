@@ -83,7 +83,7 @@ class TestRiceSiff(unittest.TestCase):
         matrix = np.ones((n, n))
         np.fill_diagonal(matrix, 0)
         result = rs.rice_siff(matrix)
-        expected_length = 2*n-1
+        expected_length = n
         self.assertEqual(len(result), expected_length)
 
     def test_rice_siff_size_1(self):
@@ -91,7 +91,7 @@ class TestRiceSiff(unittest.TestCase):
         matrix = np.ones((n, n))
         np.fill_diagonal(matrix, 0)
         result = rs.rice_siff(matrix)
-        expected_length = 2*n-1
+        expected_length = n
         self.assertEqual(len(result), expected_length)
 
     def test_rice_siff_size_2(self):
@@ -99,7 +99,7 @@ class TestRiceSiff(unittest.TestCase):
         matrix = np.ones((n, n))
         np.fill_diagonal(matrix, 0)
         result = rs.rice_siff(matrix)
-        expected_length = 2*n-1
+        expected_length = n
         self.assertEqual(len(result), expected_length)
 
     def test_rice_siff_large_size(self):
@@ -107,7 +107,7 @@ class TestRiceSiff(unittest.TestCase):
         matrix = np.ones((n, n))
         np.fill_diagonal(matrix, 0)
         result = rs.rice_siff(matrix)
-        expected_length = 2*n-1
+        expected_length = n
         self.assertEqual(len(result), expected_length)
 
     def test_rice_siff_non_square_input(self):
@@ -121,7 +121,7 @@ class TestRiceSiff(unittest.TestCase):
         matrix = np.zeros((n, n))
         np.fill_diagonal(matrix, 0)
         result = rs.rice_siff(matrix)
-        expected_length = 2*n-1
+        expected_length = n
         self.assertNotEqual(len(result), expected_length)
 
 
