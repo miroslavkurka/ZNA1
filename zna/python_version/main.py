@@ -64,8 +64,8 @@ def generate_matrix(n_of_rows, n_of_cols):
 
 if __name__ == "__main__":
     num_of_matrices = 20
-    num_of_rows = 20
-    num_of_cols = 20
+    num_of_rows = 50
+    num_of_cols = 50
 
     lengths_objintr = []
     lengths_ricesiff = []
