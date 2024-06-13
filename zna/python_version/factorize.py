@@ -32,8 +32,7 @@ def set_cover(universe, subsets):
     return cover
 
 
-# Example usage
-universe = {1, 2, 3, 4, 5}
-subsets = [{1, 2, 3}, {2, 4}, {3, 4}, {4, 5}]
+#universe = {1, 2, 3, 4, 5}
+#subsets = [{1, 2, 3}, {2, 4}, {3, 4}, {4, 5}]
 
-print(set_cover(universe, subsets))
+#print(set_cover(universe, subsets))

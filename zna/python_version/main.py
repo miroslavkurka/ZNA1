@@ -26,7 +26,7 @@ def generate_matrix(n_of_rows, n_of_cols):
     return np.random.choice([0, 1], size=(n_of_rows, n_of_cols))
 
 if __name__ == "__main__":
-    num_of_matrices = 1
+    num_of_matrices = 20
     num_of_rows = 4
     num_of_cols = 4
 
@@ -38,9 +38,10 @@ if __name__ == "__main__":
         counter+=1
         matrix = generate_matrix(num_of_rows,num_of_cols)
         concepts_from_objintr = ob.object_intersection(matrix)
+        concepts_from_objintr = [set(el) for el in concepts_from_objintr]
 
         concepts_from_ricesiff = rs.rice_siff(matrix)
-        concepts_from_ricesiff = [set(subarray) for subarray in concepts_from_ricesiff]
+        concepts_from_ricesiff = [set(el) for el in concepts_from_ricesiff]
 
         cover = fc.set_cover(set(range(num_of_cols)), concepts_from_objintr)
 
