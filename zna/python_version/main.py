@@ -4,41 +4,78 @@ import rice_siff as rs
 import matplotlib.pyplot as plt
 import factorize as fc
 from tabulate import tabulate
+import time
 
-def plot_data(num_of_matrices, lengths_objintr, lengths_ricesiff):
-    x = np.arange(num_of_matrices)
-    width = 0.35
 
-    fig, ax = plt.subplots()
-    rects1 = ax.bar(x - width / 2, lengths_objintr, width, label='ObjIntr')
-    rects2 = ax.bar(x + width / 2, lengths_ricesiff, width, label='RiceSiff')
+def plot_concepts_comparison(mat_size,rounds, lengths_objintr, lengths_ricesiff):
+    plt.figure(figsize=(10, 6))
+    plt.plot(rounds, lengths_objintr, label='Objintr Concepts', marker='o')
+    plt.plot(rounds, lengths_ricesiff, label='Ricesiff Concepts', marker='x')
+    plt.xlabel('Round Number')
+    plt.ylabel('Number of Concepts')
+    plt.title(f'Comparison of Concepts Detected by Objintr and Ricesiff for matrix size {mat_size}x{mat_size}')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
 
-    ax.set_xlabel('Matrix Index')
-    ax.set_ylabel('Number of Concepts')
-    ax.set_title('Number of Concepts by Object Intersection and Rice-Siff Algorithms')
-    ax.set_xticks(x)
-    ax.set_xticklabels([f'Matrix {i + 1}' for i in x])
-    ax.legend()
 
-    fig.tight_layout()
+def benchmark_performance(num_of_matrices, num_of_rows, num_of_cols):
+    times = {
+        'generate_matrix': [],
+        'object_intersection': [],
+        'rice_siff': [],
+        'set_cover': []
+    }
 
+    for _ in range(num_of_matrices):
+        # Benchmark generate_matrix
+        start_time = time.perf_counter()
+        matrix = generate_matrix(num_of_rows, num_of_cols)
+        times['generate_matrix'].append(time.perf_counter() - start_time)
+
+        # Benchmark object_intersection
+        start_time = time.perf_counter()
+        concepts_from_objintr = ob.object_intersection(matrix)
+        times['object_intersection'].append(time.perf_counter() - start_time)
+
+        # Benchmark rice_siff
+        start_time = time.perf_counter()
+        concepts_from_ricesiff = rs.rice_siff(matrix)
+        times['rice_siff'].append(time.perf_counter() - start_time)
+
+        # Benchmark set_cover
+        start_time = time.perf_counter()
+        fc.set_cover(set(range(num_of_cols)), [set(el) for el in concepts_from_objintr])
+        times['set_cover'].append(time.perf_counter() - start_time)
+
+    # Plot the benchmarking results
+    plt.figure(figsize=(12, 8))
+    labels = times.keys()
+    avg_times = [sum(times[label]) / num_of_matrices for label in labels]
+
+    plt.bar(labels, avg_times, color=['blue', 'green', 'red', 'purple'])
+    plt.xlabel('Function')
+    plt.ylabel('Average Time Taken (seconds)')
+    plt.title('Performance Benchmarking of Functions')
     plt.show()
 def generate_matrix(n_of_rows, n_of_cols):
     return np.random.choice([0, 1], size=(n_of_rows, n_of_cols))
 
+
 if __name__ == "__main__":
     num_of_matrices = 20
-    num_of_rows = 4
-    num_of_cols = 4
+    num_of_rows = 20
+    num_of_cols = 20
 
     lengths_objintr = []
     lengths_ricesiff = []
 
     counter = 0
     results = []
-    for _ in range (num_of_matrices):
-        counter+=1
-        matrix = generate_matrix(num_of_rows,num_of_cols)
+    rounds = list(range(1, num_of_matrices + 1))
+    for _ in rounds:
+        counter += 1
+        matrix = generate_matrix(num_of_rows, num_of_cols)
         concepts_from_objintr = ob.object_intersection(matrix)
         concepts_from_objintr = [set(el) for el in concepts_from_objintr]
 
@@ -47,7 +84,6 @@ if __name__ == "__main__":
 
         cover_objintr = fc.set_cover(set(range(num_of_cols)), concepts_from_objintr)
         cover_ricesiff = fc.set_cover(set(range(num_of_cols)), concepts_from_ricesiff)
-
 
         lengths_objintr.append(len(concepts_from_objintr))
         lengths_ricesiff.append(len(concepts_from_ricesiff))
@@ -61,7 +97,8 @@ if __name__ == "__main__":
             "Cover Ricesiff": cover_ricesiff
         })
 
-    headers = ["Round", "Object Intersection Concepts", "Object Intersection Sets", "Rice-Siff Concepts", "Rice-Siff Sets", "Cover Object Intersection", "Cover Rice-Siff"]
+    headers = ["Round", "Object Intersection Concepts", "Object Intersection Sets", "Rice-Siff Concepts",
+               "Rice-Siff Sets", "Cover Object Intersection", "Cover Rice-Siff"]
     table = []
 
     for result in results:
@@ -76,3 +113,6 @@ if __name__ == "__main__":
         ])
 
     print(tabulate(table, headers, tablefmt="grid"))
+
+    plot_concepts_comparison(num_of_rows, rounds, lengths_objintr, lengths_ricesiff)
+    benchmark_performance(num_of_matrices, num_of_rows, num_of_cols)
